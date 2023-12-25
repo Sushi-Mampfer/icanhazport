@@ -1,9 +1,15 @@
+use std::net::SocketAddr;
+
 use axum::{
     extract::Path, routing::get, response::Json, Router, http::HeaderMap,
 };
 
-use tokio::net::TcpListener;
-use port_scanner::scan_port_addr;
+use tokio::net::{
+    TcpStream, TcpListener,
+};
+use tokio::time::{
+    timeout, Duration,
+};
 
 #[tokio::main]
 async fn main() {
@@ -15,5 +21,14 @@ async fn main() {
 
 async fn handle_request(Path(port): Path<u16>, headers: HeaderMap) -> Json<bool> {
     let ip: &str = headers.get("CF-Connecting-IP").unwrap().to_str().unwrap();
-    return Json(scan_port_addr(format!("{}:{}",ip.to_string(), port.to_string())));
+    return Json(scan_port(SocketAddr::new(ip.parse().unwrap(), port)).await);
 }
+
+async fn scan_port(addr: SocketAddr) -> bool {
+    if let Ok(_) =timeout(Duration::from_secs(3), TcpStream::connect(addr)).await {
+        true
+    } else {
+        false
+    }
+}
+
