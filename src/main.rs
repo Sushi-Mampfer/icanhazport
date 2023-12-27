@@ -11,8 +11,6 @@ use tokio::time::{
     timeout, Duration,
 };
 
-//test
-
 #[tokio::main]
 async fn main() {
     let app = Router::new()
