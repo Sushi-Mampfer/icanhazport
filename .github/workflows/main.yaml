@@ -2,7 +2,7 @@ name: Compile and Publish
 on:
   push:
     branches:
-      - main
+      - master
 
 concurrency:
   group: ${{ github.ref }}
