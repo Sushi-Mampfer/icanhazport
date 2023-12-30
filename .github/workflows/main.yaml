@@ -86,7 +86,7 @@ jobs:
 
           gh release create $TAG --draft --notes "Automatically built binaries"
 
-          cd target
+          (cd target
 
           for DIR_NAME in * ; do
               cd $DIR_NAME
@@ -94,7 +94,7 @@ jobs:
               tar -czvf $DIR_NAME.tar.gz *
               gh release upload $TAG $DIR_NAME.tar.gz
               cd ..
-          done
+          done)
 
           gh release edit $TAG --draft=false
         env:
